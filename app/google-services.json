@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "123832216933",
+    "project_id": "carsexplorer-537ed",
+    "storage_bucket": "carsexplorer-537ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123832216933:android:5b57a8268e2a4276e1858c",
+        "android_client_info": {
+          "package_name": "com.example.firebasecarsexplorer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "123832216933-k02bdjfnrhavbia7mide7vlq5k8qi7kv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDq9sLHixYHI7tRAyisHH1wfygkXRyZpiY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "123832216933-k02bdjfnrhavbia7mide7vlq5k8qi7kv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
