@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.firebasecarsexplorer.R
 import com.example.firebasecarsexplorer.data.Car
 
@@ -36,6 +37,10 @@ class CarAdapter(private val listener: OnCarItemLongClick) : RecyclerView.Adapte
 
         name.text = carList[holder.adapterPosition].name
         productionYear.text = carList[holder.adapterPosition].productionYear
+
+        Glide.with(holder.itemView)
+            .load(carList[holder.adapterPosition].image)
+            .into(image)
     }
 
     override fun getItemCount(): Int {

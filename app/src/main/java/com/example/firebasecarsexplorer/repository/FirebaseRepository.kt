@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 class FirebaseRepository {
 
@@ -101,6 +102,33 @@ class FirebaseRepository {
             }
             .addOnFailureListener{
                 Log.d(REPO_DEBUG, it.message.toString())
+            }
+    }
+
+    fun uploadUserProfileImage(bytes: ByteArray){
+        storage.getReference("users")
+            .child("${auth.currentUser!!.uid}.jpg")
+            .putBytes(bytes)
+            .addOnCompleteListener{
+                Log.d(REPO_DEBUG, "Wysłano zdjęcie użytkownika")
+            }
+            .addOnSuccessListener{
+                getPhotoDownloadUrl(it.storage)
+                Log.d(REPO_DEBUG, "Pobrano Url zdjęcia użytkownika")
+            }
+            .addOnFailureListener{
+                Log.d(REPO_DEBUG, "Bład wysyłania zdjęcia użytkownika: ${ it.message.toString() }")
+            }
+    }
+
+    private fun getPhotoDownloadUrl(storage: StorageReference) {
+        storage.downloadUrl
+            .addOnSuccessListener {
+                editProfileData(mapOf("image" to it.toString()))
+                Log.d(REPO_DEBUG, "Edytowano zdjęcie użytkownika")
+            }
+            .addOnFailureListener{
+                Log.d(REPO_DEBUG, "Błąd edycji zdjęcia użytkownika ${ it.message.toString() }")
             }
     }
 }
