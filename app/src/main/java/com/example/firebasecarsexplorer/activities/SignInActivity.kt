@@ -16,6 +16,7 @@ class SignInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         val navController = findNavController(R.id.nav_registration_fragment)
         val appBarConfiguration = AppBarConfiguration(setOf(

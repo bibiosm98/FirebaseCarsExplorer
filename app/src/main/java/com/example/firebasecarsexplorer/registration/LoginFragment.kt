@@ -24,21 +24,24 @@ class LoginFragment : BaseFragment() {
     private lateinit var binding: LoginFragmentBinding
     private val LOG_DEBUG = "LOG_DEBUG"
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        binding = LoginFragmentBinding.inflate(inflater)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = LoginFragmentBinding.inflate(inflater, container, false)
 
         binding.toRegistrationBtn.setOnClickListener{
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegistrationFragment())
         }
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupLoginOnClick()
-//        setupRegistrationclick()
     }
 
     private fun setupLoginOnClick() {
@@ -53,14 +56,7 @@ class LoginFragment : BaseFragment() {
                     Snackbar.make(requireView(), "Coś poszło nie tak...", Snackbar.LENGTH_SHORT).show()
                     Log.d(LOG_DEBUG, exc.message.toString())
                 }
-
         }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
 }

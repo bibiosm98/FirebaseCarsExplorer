@@ -8,15 +8,16 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.firebasecarsexplorer.registration.LoginFragment"
-        android:label="login_fragment"
-        tools:layout="@layout/login_fragment" >
+        android:label="Witamy w Aplikacji"
+        tools:layout="@layout/login_fragment">
         <action
             android:id="@+id/action_loginFragment_to_registrationFragment"
-            app:destination="@id/registrationFragment" />
+            app:destination="@id/registrationFragment"
+            app:popUpTo="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
         android:name="com.example.firebasecarsexplorer.registration.RegistrationFragment"
-        android:label="registration_fragment"
+        android:label="Rejestracja"
         tools:layout="@layout/registration_fragment" />
 </navigation>

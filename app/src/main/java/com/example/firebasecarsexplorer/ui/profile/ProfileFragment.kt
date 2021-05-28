@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.firebasecarsexplorer.BaseFragment
 import com.example.firebasecarsexplorer.R
 import com.example.firebasecarsexplorer.data.Car
 import com.example.firebasecarsexplorer.data.User
@@ -24,7 +25,7 @@ import com.example.firebasecarsexplorer.ui.home.OnCarItemLongClick
 import java.io.ByteArrayOutputStream
 import java.lang.Exception
 
-class ProfileFragment : Fragment(), OnCarItemLongClick {
+class ProfileFragment : BaseFragment(), OnCarItemLongClick {
 
     companion object {
         fun newInstance() = ProfileFragment()

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.firebasecarsexplorer.BaseFragment
 import com.example.firebasecarsexplorer.R
 import com.example.firebasecarsexplorer.data.Car
 import com.example.firebasecarsexplorer.databinding.FragmentHomeBinding
@@ -18,7 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 
-class HomeFragment : Fragment(), OnCarItemLongClick {
+class HomeFragment : BaseFragment(), OnCarItemLongClick {
 
     private val HOME_DEBUG = "HOME_DEBUG"
     private lateinit var homeViewModel: HomeViewModel
@@ -30,6 +31,17 @@ class HomeFragment : Fragment(), OnCarItemLongClick {
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        binding.homeRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.homeRecyclerView.adapter = adapter
+
+        return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -47,21 +59,6 @@ class HomeFragment : Fragment(), OnCarItemLongClick {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-        binding.homeRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.homeRecyclerView.adapter = adapter
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         homeViewModel.cars.observe(viewLifecycleOwner, { list ->
@@ -71,7 +68,6 @@ class HomeFragment : Fragment(), OnCarItemLongClick {
 
     override fun onCarItemLongClick(car: Car, position: Int) {
         Log.d(HOME_DEBUG, car.toString())
-//        Toast.makeText(requireContext(), car.name, Toast.LENGTH_SHORT).show()
         car.name?.let {
             Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
             homeViewModel.addFavCar(car)

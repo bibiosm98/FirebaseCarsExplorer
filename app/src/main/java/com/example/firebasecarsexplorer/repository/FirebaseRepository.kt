@@ -18,10 +18,16 @@ class FirebaseRepository {
     private val auth = FirebaseAuth.getInstance()
     private val cloud = FirebaseFirestore.getInstance()
 
+    fun createNewUser(user: User){
+        cloud.collection("users")
+            .document(user.uid!!)
+            .set(user)
+    }
     fun getUserData(): LiveData<User> {
         val cloudResult = MutableLiveData<User>()
         val uid = auth.currentUser?.uid
 
+        Log.d("uid user", uid.toString())
         cloud.collection("users")
             .document(uid!!)
             .get()
@@ -34,6 +40,43 @@ class FirebaseRepository {
             }
         return cloudResult
     }
+    fun editProfileData(map: Map<String, String>){
+        cloud.collection("users")
+            .document(auth.currentUser!!.uid)
+            .update(map)
+            .addOnSuccessListener {
+                Log.d(REPO_DEBUG, "Zaktualizowano dane użytkownika")
+            }
+            .addOnFailureListener{
+                Log.d(REPO_DEBUG, it.message.toString())
+            }
+    }
+    fun uploadUserProfileImage(bytes: ByteArray){
+        storage.getReference("users")
+            .child("${auth.currentUser!!.uid}.jpg")
+            .putBytes(bytes)
+            .addOnCompleteListener{
+                Log.d(REPO_DEBUG, "Wysłano zdjęcie użytkownika")
+            }
+            .addOnSuccessListener{
+                getPhotoDownloadUrl(it.storage)
+                Log.d(REPO_DEBUG, "Pobrano Url zdjęcia użytkownika")
+            }
+            .addOnFailureListener{
+                Log.d(REPO_DEBUG, "Bład wysyłania zdjęcia użytkownika: ${ it.message.toString() }")
+            }
+    }
+    private fun getPhotoDownloadUrl(storage: StorageReference) {
+        storage.downloadUrl
+            .addOnSuccessListener {
+                editProfileData(mapOf("image" to it.toString()))
+                Log.d(REPO_DEBUG, "Edytowano zdjęcie użytkownika")
+            }
+            .addOnFailureListener{
+                Log.d(REPO_DEBUG, "Błąd edycji zdjęcia użytkownika ${ it.message.toString() }")
+            }
+    }
+
     fun getCars(): LiveData<List<Car>> {
         val cloudResult = MutableLiveData<List<Car>>()
 
@@ -87,48 +130,4 @@ class FirebaseRepository {
             }
     }
 
-    fun createNewUser(user: User){
-        cloud.collection("users")
-            .document(user.uid!!)
-            .set(user)
-    }
-
-    fun editProfileData(map: Map<String, String>){
-        cloud.collection("users")
-            .document(auth.currentUser!!.uid)
-            .update(map)
-            .addOnSuccessListener {
-                Log.d(REPO_DEBUG, "Zaktualizowano dane użytkownika")
-            }
-            .addOnFailureListener{
-                Log.d(REPO_DEBUG, it.message.toString())
-            }
-    }
-
-    fun uploadUserProfileImage(bytes: ByteArray){
-        storage.getReference("users")
-            .child("${auth.currentUser!!.uid}.jpg")
-            .putBytes(bytes)
-            .addOnCompleteListener{
-                Log.d(REPO_DEBUG, "Wysłano zdjęcie użytkownika")
-            }
-            .addOnSuccessListener{
-                getPhotoDownloadUrl(it.storage)
-                Log.d(REPO_DEBUG, "Pobrano Url zdjęcia użytkownika")
-            }
-            .addOnFailureListener{
-                Log.d(REPO_DEBUG, "Bład wysyłania zdjęcia użytkownika: ${ it.message.toString() }")
-            }
-    }
-
-    private fun getPhotoDownloadUrl(storage: StorageReference) {
-        storage.downloadUrl
-            .addOnSuccessListener {
-                editProfileData(mapOf("image" to it.toString()))
-                Log.d(REPO_DEBUG, "Edytowano zdjęcie użytkownika")
-            }
-            .addOnFailureListener{
-                Log.d(REPO_DEBUG, "Błąd edycji zdjęcia użytkownika ${ it.message.toString() }")
-            }
-    }
 }
