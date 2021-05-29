@@ -36,6 +36,7 @@ class LoginFragment : BaseFragment() {
         binding.toRegistrationBtn.setOnClickListener{
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegistrationFragment())
         }
+        setHasOptionsMenu(false)
         return binding.root
     }
 

@@ -12,8 +12,7 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_navigation_home_to_navigation_profile"
-            app:destination="@id/navigation_profile"
-            app:popUpTo="com.android.tools.property.panel.api.EnumValue$Companion$LOADING$1@513d8ee6" />
+            app:destination="@id/navigation_profile" />
     </fragment>
 
     <fragment

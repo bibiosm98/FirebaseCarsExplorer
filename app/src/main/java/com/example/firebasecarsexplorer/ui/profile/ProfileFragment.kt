@@ -4,26 +4,31 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Bitmap
-import androidx.lifecycle.ViewModelProvider
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.firebasecarsexplorer.BaseFragment
-import com.example.firebasecarsexplorer.R
 import com.example.firebasecarsexplorer.data.Car
 import com.example.firebasecarsexplorer.data.User
 import com.example.firebasecarsexplorer.databinding.ProfileFragmentBinding
 import com.example.firebasecarsexplorer.ui.home.CarAdapter
 import com.example.firebasecarsexplorer.ui.home.OnCarItemLongClick
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
-import java.lang.Exception
 
 class ProfileFragment : BaseFragment(), OnCarItemLongClick {
 
@@ -126,22 +131,61 @@ class ProfileFragment : BaseFragment(), OnCarItemLongClick {
         }
     }
 
+//Move whole impl to MV
     fun takePicture() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//For Camera
+//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//        resultLauncher.launch(intent)
+
+//For Gallery
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
         resultLauncher.launch(intent)
     }
+
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val data: Intent? = result.data
-            val imageBitmap = data?.extras?.get("data") as Bitmap
 
-            Log.d("onActivityResult", imageBitmap.byteCount.toString())
-            Glide.with(this)
+//For Camera
+//            val data: Intent? = result.data
+//            val imageBitmap = data?.extras?.get("data") as Bitmap
+//
+//            Glide.with(this)
+//                .asBitmap()
+//                .load(imageBitmap)
+//                .circleCrop()
+//                .into(binding.userImage)
+//
+//            val stream = ByteArrayOutputStream()
+//            val results = imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+//            val byteArray = stream.toByteArray()
+//
+//            if(results) viewModel.uploadUserPhoto(byteArray)
+
+
+// For gallery
+            val data: Intent? = result.data
+
+            Glide.with(requireContext())
                 .asBitmap()
-                .load(imageBitmap)
+                .load(data?.data)
                 .circleCrop()
                 .into(binding.userImage)
+
+            runBlocking{
+                pushPhoto(data?.data.toString())
+            }
+
+        }
+    }
+
+    suspend fun pushPhoto(url: String) = withContext(Dispatchers.IO) {
+
+            val imageBitmap = Glide.with(requireContext())
+                .asBitmap()
+                .load(url)
+                .into(100, 100) // bad way of implementation...
+                .get()
 
             val stream = ByteArrayOutputStream()
             val results = imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
@@ -149,5 +193,24 @@ class ProfileFragment : BaseFragment(), OnCarItemLongClick {
 
             if(results) viewModel.uploadUserPhoto(byteArray)
         }
-    }
+
+//Works almost fine, need to deal with black background after circleCrop()
+//            val data: Intent? = result.data
+//            Glide.with(requireContext())
+//            .asBitmap()
+//            .load(data?.data)
+//            .circleCrop()
+//            .into(object : CustomTarget<Bitmap>(){
+//                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+//                    binding.userImage.setImageBitmap(resource)
+//                    val stream = ByteArrayOutputStream()
+//                    val results = resource.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+//                    val byteArray = stream.toByteArray()
+//
+//                    if(results) viewModel.uploadUserPhoto(byteArray)
+//                }
+//                override fun onLoadCleared(placeholder: Drawable?) {
+//                    Snackbar.make(requireView(), "Error while adding new photo", Snackbar.LENGTH_SHORT).show()
+//                }
+//            })
 }
