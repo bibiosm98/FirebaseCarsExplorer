@@ -12,6 +12,6 @@ class  HomeViewModel : ViewModel() {
     val cars = repository.getCars()
 
     fun addFavCar(car: Car){
-        repository.addFavCars(car )
+        repository.addFavCars(car)
     }
 }

@@ -56,6 +56,7 @@ class CarAdapter(private val listener: OnCarItemLongClick) : RecyclerView.Adapte
         }
     }
 }
+
 interface OnCarItemLongClick{
     fun onCarItemLongClick(car: Car, position: Int)
 }

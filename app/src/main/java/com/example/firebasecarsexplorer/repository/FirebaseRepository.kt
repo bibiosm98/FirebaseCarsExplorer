@@ -107,7 +107,7 @@ class FirebaseRepository {
                 }
         return cloudResult
     }
-    fun addFavCars(car: Car){
+     fun addFavCars(car: Car){
         cloud.collection("users")
             .document(auth.currentUser?.uid!!)
             .update("favCars", FieldValue.arrayUnion(car.id))
